@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  backend:
+    build: . # Build image from local Dockerfile
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 3306
+      DATABASE_USER: '${DATABASE_USER}'
+      DATABASE_PASSWORD: '${DATABASE_PASSWORD}'
+      DATABASE_NAME: '${DATABASE_NAME}'
+    ports:
+      - '8002:8001' # Expose port 3000 on host
+    depends_on:
+      - db # Wait until database service is loaded
+    networks:
+      - app-network
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DATABASE_ROOT_PASS}'
+      MYSQL_DATABASE: '${DATABASE_NAME}'
+    networks:
+      - app-network
+    # ports:
+    # - ${DATABASE_PORT}:3306
+networks: # Specify the network for bridging
+  app-network:
+    driver: bridge
